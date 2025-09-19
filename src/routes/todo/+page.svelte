@@ -1,39 +1,27 @@
 <script lang="ts">
-	import axios from 'axios';
 	import { onMount } from 'svelte';
-
-	interface Todo {
-		userId: number;
-		id: number;
-		title: string;
-		completed: boolean;
-	}
+	import type { Todo } from './todo.types';
+	import { fetchTodos, getFilterdTodos } from './todos.service';
 
 	let todos: Todo[] = $state([]);
 	let searchQuery = $state('');
 	let isLoading = $state(false);
 	let error = $state<string | null>(null);
 
-	const filteredTodos = $derived(
-		todos.filter((todo) => todo.title.toLowerCase().includes(searchQuery.toLowerCase()))
-	);
+	const filteredTodos = $derived(getFilterdTodos(todos, searchQuery));
 
-	const fetchTodos = async (): Promise<void> => {
+	onMount(async () => {
+		isLoading = true;
+		error = null;
+
 		try {
-			isLoading = true;
-			error = null;
-			const response = await axios.get<Todo[]>('https://jsonplaceholder.typicode.com/todos');
-			todos = response.data;
+			todos = await fetchTodos();
 		} catch (err) {
+			console.error(err);
 			error = 'Failed to fetch todos';
-			console.error('Error fetching todos:', err);
 		} finally {
 			isLoading = false;
 		}
-	};
-
-	onMount(() => {
-		fetchTodos();
 	});
 </script>
 

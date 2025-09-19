@@ -7,7 +7,7 @@
 
 <nav>
 	<Button href="/">Home</Button>
-	<Button href="/about">About</Button>
+	<Button href="/todo">Todos</Button>
 </nav>
 {@render children?.()}
 
