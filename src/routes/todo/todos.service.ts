@@ -8,3 +8,6 @@ export const fetchTodos = async (): Promise<Todo[]> => {
 export const getFilterdTodos = (todos: Todo[], search: string): Todo[] => {
 	return todos.filter((todo) => todo.title.toLowerCase().includes(search.toLowerCase()));
 };
+export const deleteTodo = async (id: number, todos: Todo[]): Promise<Todo[]> => {
+	return todos.filter((todo) => todo.id !== id);
+};

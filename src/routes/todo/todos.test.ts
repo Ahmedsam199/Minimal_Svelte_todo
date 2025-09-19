@@ -1,7 +1,7 @@
 import { describe, expect, it, test, vi } from 'vitest';
 import axios from 'axios';
 import type { Todo } from './todo.types';
-import { fetchTodos, getFilterdTodos } from './todos.service';
+import { deleteTodo, fetchTodos, getFilterdTodos } from './todos.service';
 
 vi.mock('axios');
 describe('fetchTodos', () => {
@@ -29,5 +29,20 @@ describe('filterdTodos', () => {
 		const searchQuery = 'svelte';
 		const filtered = getFilterdTodos(todos, searchQuery);
 		expect(filtered).toEqual([{ userId: 1, id: 1, title: 'Learn Svelte', completed: false }]);
+	});
+});
+describe('Delete Todo', () => {
+	it('should delete a todo by id', async () => {
+		const todos: Todo[] = [
+			{ userId: 1, id: 1, title: 'Learn Svelte', completed: false },
+			{ userId: 1, id: 2, title: 'Build a Todo App', completed: true },
+			{ userId: 1, id: 3, title: 'Write Tests', completed: false }
+		];
+		const idToDelete = 2;
+		const updatedTodos = await deleteTodo(idToDelete, todos);
+		expect(updatedTodos).toEqual([
+			{ userId: 1, id: 1, title: 'Learn Svelte', completed: false },
+			{ userId: 1, id: 3, title: 'Write Tests', completed: false }
+		]);
 	});
 });

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Todo } from './todo.types';
-	import { fetchTodos, getFilterdTodos } from './todos.service';
+	import { deleteTodo, fetchTodos, getFilterdTodos } from './todos.service';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	let todos: Todo[] = $state([]);
 	let searchQuery = $state('');
@@ -9,7 +10,9 @@
 	let error = $state<string | null>(null);
 
 	const filteredTodos = $derived(getFilterdTodos(todos, searchQuery));
-
+	const handleDelete = async (id: number) => {
+		todos = await deleteTodo(id, todos);
+	};
 	onMount(async () => {
 		isLoading = true;
 		error = null;
@@ -53,6 +56,12 @@
 						<span class="checkmark"></span>
 						Task Completed
 					</label>
+					<Button
+						variant="ghost"
+						onclick={() => {
+							handleDelete(todo.id);
+						}}>Delete</Button
+					>
 				</div>
 			{/each}
 		</div>
@@ -136,6 +145,7 @@
 	}
 
 	.todo-item {
+		gap: 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
